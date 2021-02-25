@@ -2,34 +2,66 @@ import React from 'react';
 import ReactDom from 'react-dom';
 import './index.css'
 
+/*
 class Square extends React.Component {
-  constructor (props) {
-    super(props);
-    // 初始化状态值
-    this.state = {
-      value: null
-    }
-    // 绑定this为当前实例
-    this.clickHandle = this.clickHandle.bind(this)
-  }
-  clickHandle (event) {
-    this.setState({value: 'X'})
-  }
+  // constructor (props) {
+  //   super(props);
+  //   // 初始化状态值
+  //   this.state = {
+  //     value: null
+  //   }
+  //   // 绑定this为当前实例
+  //   this.clickHandle = this.clickHandle.bind(this)
+  // }
+  // clickHandle (event) {
+  //   this.setState({value: 'X'})
+  // }
   render() {
     return (
-      <button className="square" onClick={this.clickHandle}>
-        {this.state.value}
+      <button className="square" onClick={this.props.onClick}>
+        {this.props.value}
       </button>
     );
   }
 }
+*/
+// 使用函数组件
+function Square (props) {
+  return (
+    <button className="square" onClick={props.onClick}>
+      {props.value}
+    </button>
+  );
+}
 
 class Board extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      // 棋盘落子
+      squares: Array(9).fill(null),
+      // 下一步落子方
+      xIsNext: true
+    };
+    // this.handleClick = this.handleClick.bind(this)
+  }
+  handleClick(i) {
+    console.log('click', i)
+    const squares = this.state.squares.slice();
+    if (squares[i]) {
+      return ;
+    }
+    squares[i] = this.state.xIsNext ? 'X' : 'O';
+    this.setState({
+      squares: squares,
+      xIsNext: !this.state.xIsNext
+    })
+  }
   renderSquare(i) {
-    return <Square value={i} />;
+    return <Square value={this.state.squares[i]} onClick={() => this.handleClick(i)} />;
   }
   render() {
-    let status = 'Next player : X';
+    let status = 'Next player : ' + (this.state.xIsNext ? 'X' : 'O');
     return (
       <div>
         <div className="status">{status}</div>
